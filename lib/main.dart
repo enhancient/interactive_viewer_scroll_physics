@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interactive_viewer_scroll_physics/interactive_viewer_scroll_physics.dart';
-
+import 'interactive_viewer.dart' as iv;
 void main() {
   runApp(const MyApp());
 }
@@ -55,19 +55,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -86,27 +74,35 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: InteractiveViewerScrollPhysics(
-       // transformationController: TransformationController(Matrix4.identity()),
-        minScale: 0.2,
-        maxScale: 8.0,
-        child: Center(
-          child: GridView.builder(
-               physics: const NeverScrollableScrollPhysics(),
-               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                 crossAxisCount: 5,
-                 crossAxisSpacing: 4,
-                 mainAxisSpacing: 4,
+      //body: iv.InteractiveViewer(
+       body: SafeArea(
+         child: InteractiveViewer(  
+         constrained: false,
+              //  clipBehavior: Clip.none, 
+             //  scrollPhysics: const ClampingScrollPhysics(),
+             //  snapScaleToFit: true,
+              boundaryMargin: const EdgeInsets.all(40),
+             
+              // EdgeInsets.all(double.infinity),
+              //alignment: Alignment.topRight,
+          minScale: 0.4,
+          maxScale: 8,
+          child: Container(
+            width: 600,
+            child: Wrap(
+              spacing: 5,
+              runSpacing: 2,
+              children: List.generate(5050, (index) {
+                return Container(
+                  width: 10,
+                  height: 10,
+                  color: Colors.primaries[index % Colors.primaries.length],
+                );
+              }),
+            ),
+          ),
                ),
-               itemCount: 25,
-               itemBuilder: (context, index) {
-                 return Container(
-                   color: Colors.primaries[index % Colors.primaries.length],
-                 );
-               },
-             ),
-        ),
-      ),
+       ),
        );
   }
 }
