@@ -76,19 +76,19 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       //body: iv.InteractiveViewer(
        body: SafeArea(
-         child: InteractiveViewer(  
+         child: InteractiveViewerScrollPhysics(  
          constrained: false,
               //  clipBehavior: Clip.none, 
-             //  scrollPhysics: const ClampingScrollPhysics(),
-             //  snapScaleToFit: true,
+               scrollPhysics: const ClampingScrollPhysics(),
+               snapScaleToFit: true,
               boundaryMargin: const EdgeInsets.all(40),
              
               // EdgeInsets.all(double.infinity),
               //alignment: Alignment.topRight,
-          minScale: 0.4,
+          minScale: 0.7,
           maxScale: 8,
           child: Container(
-            width: 600,
+            width: 400,
             child: Wrap(
               spacing: 5,
               runSpacing: 2,
