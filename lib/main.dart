@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:interactive_viewer_scroll_physics/interactive_viewer_scroll_physics.dart';
-import 'interactive_viewer.dart' as iv;
+
 void main() {
   runApp(const MyApp());
 }
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'InteractiveViewer with ScrollPhysics',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'InteractiveViewer with ScrollPhysics'),
     );
   }
 }
@@ -55,7 +55,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
- 
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -74,25 +73,20 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      //body: iv.InteractiveViewer(
-       body: SafeArea(
-         child: InteractiveViewerScrollPhysics(  
-         constrained: false,
-              //  clipBehavior: Clip.none, 
-               scrollPhysics: const ClampingScrollPhysics(),
-               snapScaleToFit: true,
-              boundaryMargin: const EdgeInsets.all(40),
-             
-              // EdgeInsets.all(double.infinity),
-              //alignment: Alignment.topRight,
+      body: SafeArea(
+        child: InteractiveViewerScrollPhysics(
+          clipBehavior: Clip.none,
+          constrained: false,
+          scrollPhysics: const BouncingScrollPhysics(),
+          snapScaleToFit: true,
           minScale: 0.7,
           maxScale: 8,
-          child: Container(
+          child: SizedBox(
             width: 400,
             child: Wrap(
-              spacing: 5,
+              spacing: 3,
               runSpacing: 2,
-              children: List.generate(5050, (index) {
+              children: List.generate(9000, (index) {
                 return Container(
                   width: 10,
                   height: 10,
@@ -101,8 +95,8 @@ class _MyHomePageState extends State<MyHomePage> {
               }),
             ),
           ),
-               ),
-       ),
-       );
+        ),
+      ),
+    );
   }
 }

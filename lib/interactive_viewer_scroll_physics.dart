@@ -776,16 +776,18 @@ class _InteractiveViewerScrollPhysicsState
 
     // ScrollPhysics
     if (widget.scrollPhysics != null) {
-    
-      // Compute current and desired scales
       final double currentScale = _transformer.value.getMaxScaleOnAxis();
+
+      // scale provided is a desired change in scale between the current scale
+      // and the start of the gesture
+      final double scaleChange = scale;
+      
+      // desired but not necessarily achieved if physics is applied
       final double desiredScale = currentScale * scale;
-      final double delta = (desiredScale / _scaleStart!);
-      final double incrementalScale = delta / _lastScale * currentScale;
-      _lastScale = delta;
 
       // Early return if not allowed to zoom outside bounds
       if (!_shouldAllowScale(desiredScale)) {
+        // Clamp the overall scale
         final double clampedTotalScale = clampDouble(
           desiredScale,
           widget.minScale,
@@ -795,15 +797,13 @@ class _InteractiveViewerScrollPhysicsState
         return matrix.clone()..scale(clampedScale);
       }
 
-      //  final double minFitScale = math.max(_viewport.width / _boundaryRect.width, _viewport.height / _boundaryRect.height);
-      // Directly clamp between minScale and maxScale, removing the fit-to-viewport floor
-
-      final double clampedTotalScale = clampDouble(
-        desiredScale,
-        widget.minScale,
-        widget.maxScale,
-      );
-      final double clampedScale = clampedTotalScale / currentScale;
+  
+      // Compute ratio of this update's scale to the previous update
+      final double scaleRatio = scaleChange / _lastScale;
+      // Store for next frame
+      _lastScale = scaleChange;
+      // Physics requires the incremental scale change since last update
+      final double incrementalScale = currentScale * scaleRatio;
 
       // Content-space-based scrollPhysics for scale overscroll and undershoot
       if (_gestureType == _GestureType.scale &&
@@ -843,20 +843,35 @@ class _InteractiveViewerScrollPhysicsState
         // Compute the distnce the zoom we cause content to exceed the boundaries
         final double deltaX = desiredContentWidth - contentWidth;
         final double deltaY = desiredContentHeight - contentHeight;
-       
+
         // Apply scroll physics half the delta to simulate exeeding a boundary
-        // on one side 
-        final double adjustedX = widget.scrollPhysics!
-            .applyPhysicsToUserOffset(metricsX, deltaX / 2) * 2;
-        final double adjustedY = widget.scrollPhysics!
-            .applyPhysicsToUserOffset(metricsY, deltaY / 2) * 2;
-       
+        // on one side
+        final double adjustedX =
+            widget.scrollPhysics!.applyPhysicsToUserOffset(
+              metricsX,
+              deltaX / 2,
+            ) *
+            2;
+        final double adjustedY =
+            widget.scrollPhysics!.applyPhysicsToUserOffset(
+              metricsY,
+              deltaY / 2,
+            ) *
+            2;
+
         // Convert back to scale factors
         final double newScaleX = (contentWidth + adjustedX) / contentWidth;
         final double newScaleY = (contentHeight + adjustedY) / contentHeight;
         final double factor = (newScaleX + newScaleY) / 2;
         return matrix.clone()..scale(factor);
       } else {
+        final double clampedTotalScale = clampDouble(
+          desiredScale,
+          widget.minScale,
+          widget.maxScale,
+        );
+        final double clampedScale = clampedTotalScale / currentScale;
+
         // Apply the scale factor to the matrix
         return matrix.clone()..scale(clampedScale);
       }
@@ -1940,6 +1955,34 @@ class CombinedSimulation extends Simulation {
   @override
   bool isDone(double time) {
     return simulationX.isDone(time) && simulationY.isDone(time);
+  }
+}
+
+class _CenteredOverlay extends StatelessWidget {
+  final Widget child;
+  final double scale;
+  final Offset focal;
+
+  const _CenteredOverlay({
+    required this.child,
+    required this.scale,
+    required this.focal,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Size screen = MediaQuery.of(context).size;
+    // Map the pinch focal so that it lands in the physical center of the screen:
+    final double dx = (screen.width  / 2) - focal.dx * scale;
+    final double dy = (screen.height / 2) - focal.dy * scale;
+    return IgnorePointer(
+      child: Transform(
+        transform: Matrix4.identity()
+          ..translate(dx, dy)
+          ..scale(scale),
+        child: child,
+      ),
+    );
   }
 }
 // end ScrollPhysics

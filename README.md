@@ -1,16 +1,10 @@
 # interactive_viewer_scroll_physics
 
-A new Flutter project.
+A modified version of Flutter's InteractiveViewer with support for ScrollPhysics.
 
-## Getting Started
+This project is experimental, and not supported!
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<video controls width="400">
+  <source src="https://github.com/enhancient/interactive_viewer_scroll_physics/tree/main/interactive_viewer_scroll_physics.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
