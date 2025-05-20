@@ -49,6 +49,8 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+  final double contentWidth = 400;
+  final EdgeInsets boundaryMargin = const EdgeInsets.all(10);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -57,6 +59,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+
+    final fitScale = (MediaQuery.of(context).size.width - widget.boundaryMargin.horizontal)/ widget.contentWidth;
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -78,11 +82,11 @@ class _MyHomePageState extends State<MyHomePage> {
           clipBehavior: Clip.none,
           constrained: false,
           scrollPhysics: const BouncingScrollPhysics(),
-          snapScaleToFit: true,
-          minScale: 0.7,
-          maxScale: 8,
+          boundaryMargin: widget.boundaryMargin,
+          minScale: fitScale,
+          maxScale: 10,
           child: SizedBox(
-            width: 400,
+            width: widget.contentWidth,
             child: Wrap(
               spacing: 3,
               runSpacing: 2,
